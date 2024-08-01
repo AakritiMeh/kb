@@ -1,0 +1,39 @@
+.NavbarMain {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    height: 60px; /* Adjust as needed */
+    
+}
+  
+.logo {
+  
+    flex-shrink: 0; 
+}
+  
+.Buttons {
+    display: flex;
+    align-items: center;
+    gap: 80px; 
+}
+  
+  
+.Buttons {
+    margin-left: auto;
+}
+  
+  
+@media (max-width: 768px) {
+    .NavbarMain {
+      flex-direction: column;
+      height: auto;
+      padding: 10px;
+    }
+  
+    .Buttons {
+      width: 100%;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+}
