@@ -32,12 +32,12 @@
 //   }
 // }
 
-import express from "express";
-import Gun from "gun";
-import bodyParser from "body-parser";
+const express = require("express");
+const Gun = require("gun");
+const bodyParser = require("body-parser");
 const app = express();
 const port = 8080;
-import cors from "cors";
+const cors = require("cors");
 const gun = Gun();
 app.use(cors());
 app.use(express.json());
@@ -66,9 +66,9 @@ app.post("/initialize-user", (req, res) => {
 });
 
 app.get("/get-all-users", (req, res) => {
-  gun.get("users").once((data) => {
-    if (data && data.walletId) {
-      res.status(200).json({ walletIds: [data.walletId] });
+  gun.get("kitaabGhar").once((datas) => {
+    if (datas && datas.walletId) {
+      res.status(200).json({ walletIds: [datas.walletId] });
     } else {
       res.status(404).json({ msg: "No wallet IDs found" });
       console.log("No data or no wallet ID");
@@ -164,39 +164,45 @@ app.get("/get-files", (req, res) => {
 
 app.get("/get-files-by-wallet", (req, res) => {
   const walletId = req.body.walletId;
+
   // const fileName = req.body.fileName;
   if (!walletId) {
     return res.status(400).json({ msg: "Missing walletId parameter" });
   }
-  const walletNode = gun.get("kitaabGhar").get(walletId);
 
-  walletNode.get("uploadedFiles").once(({ data, error }) => {
-    if (error) {
-      return res.status(500).json({ msg: "Error fetching wallet data" });
-    }
-    const uploadedFiles = data?.uploadedFiles;
-    if (!uploadedFiles) {
-      return res.status(404).json({ msg: "nothing found here" });
-    }
-    const fileNames = Object.keys(data).filter((fileName) => fileName !== "_");
-    if (fileNames.length === 0) {
-      res.status(404).json({ msg: "nothing found" });
-    } else {
-      fileNames.forEach((fileName) => {
-        walletNode
-          .get("uploadedFiles")
-          .get(fileName)
-          .once((fileLink) => {
-            res.status(200).json({ fileName: fileName, fileLink: fileLink });
-          });
-      });
-    }
-    // if (data) {
-    //   res.status(200).json({ msg: data.uploadedFiles });
-    // } else {
-    //   res.status(404).json({ msg: "nothing found" });
-    // }
+  const walletNode = gun.get("kitaabGhar");
+
+  const newNode = walletNode.once(({ data, error }) => {
+    console.log(data);
   });
+
+  // walletNode.get("uploadedFiles").once(({ data, error }) => {
+  //   if (error) {
+  //     return res.status(500).json({ msg: "Error fetching wallet data" });
+  //   }
+  //   const uploadedFiles = data?.uploadedFiles;
+  //   if (!uploadedFiles) {
+  //     return res.status(404).json({ msg: "nothing found here" });
+  //   }
+  //   const fileNames = Object.keys(data).filter((fileName) => fileName !== "_");
+  //   if (fileNames.length === 0) {
+  //     res.status(404).json({ msg: "nothing found" });
+  //   } else {
+  //     fileNames.forEach((fileName) => {
+  //       walletNode
+  //         .get("uploadedFiles")
+  //         .get(fileName)
+  //         .once((fileLink) => {
+  //           res.status(200).json({ fileName: fileName, fileLink: fileLink });
+  //         });
+  //     });
+  //   }
+  //   // if (data) {
+  //   //   res.status(200).json({ msg: data.uploadedFiles });
+  //   // } else {
+  //   //   res.status(404).json({ msg: "nothing found" });
+  //   // }
+  // });
 });
 
 app.listen(port, () => {

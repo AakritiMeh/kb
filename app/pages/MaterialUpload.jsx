@@ -1,4 +1,4 @@
-
+"use client";
 import lighthouse from '@lighthouse-web3/sdk'
 import axios from "axios";
 import { useState } from 'react';
@@ -11,7 +11,7 @@ function MaterialUpload() {
 
   const uploadFile = async(file) =>{
 
-    const output = await lighthouse.upload(file, import.meta.env.VITE_LIGHTHOUSE_API_DOCUMENT_STORAGE, false, null)
+    const output = await lighthouse.upload(file, process.env.NEXT_PUBLIC_LIGHTHOUSE_API_DOCUMENT_STORAGE, false, null)
     console.log('File Status:', output);
     fileLink='Visit at https://gateway.lighthouse.storage/ipfs/' + output.data.Hash;
     console.log(fileLink);
